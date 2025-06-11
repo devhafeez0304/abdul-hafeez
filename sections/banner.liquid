@@ -1,6 +1,23 @@
 {% schema %}
   {
-    "name": "Section name",
-    "settings": []
+    "name": "Banner",
+    "settings": [
+      {
+        "type": "image_picker",
+        "label": "Banner Image",
+        "id": "banner_image"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banner",
+        "category": "default"
+      }
+    ]
   }
 {% endschema %}
+
+<div class="banner">
+   <img src="{{ section.settings.banner_image | img_url: 'original' }}" >
+
+</div>
