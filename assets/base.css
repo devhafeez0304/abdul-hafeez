@@ -3613,6 +3613,7 @@ details-disclosure > details {
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 0 auto;
+       padding-left: 5%;
   }
   
   .column-left {
@@ -3623,14 +3624,39 @@ details-disclosure > details {
     width: 48%;
   }
 
-  .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
+  .column-left h2 {
+  font-family: Jost;
+  font-weight: 500;
+  font-size: 70px;
+
+}
+
+.column-left p {
+   font-family: Jost;
+   font-weight: 400;
+   font-size: 20px;
+   line-height: 140%;
+
+}
+
+.btn {
+    padding: 10px 30px;
+    background-color: black;
+    color: #fff;
     text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-  }
+    font-family: Jost;
+font-weight: 400;
+font-size: 16px;
+text-align: center;
+text-transform: uppercase;
+
+ }
+
+.column-right img{
+  width:100%;
+}
+
+
+
 
  
