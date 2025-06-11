@@ -1,6 +1,85 @@
 {% schema %}
-  {
-    "name": "Section name",
-    "settings": []
-  }
+{
+  "name": "Two Column",
+  "settings": [
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "textarea",
+      "label": "Description",
+      "id": "description",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+    },
+    {
+      "type": "url",
+      "label": "Button Link",
+      "id": "button_link",
+      "default": "/"
+    },
+    {
+      "type": "text",
+      "label": "Button Text",
+      "id": "button_text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "image_picker",
+      "label": "Image",
+      "id": "image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two Column",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}
+
+<div class="two-column-section">
+  <div class="column-left">
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.description }}</p>
+    <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_text }}</a>
+  </div>
+
+  <div class="column-right">
+    <img src="{{ section.settings.image | img_url: 'large' }}" alt="Image">
+  </div>
+</div>
+
+<style>
+  .two-column-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+  
+  .column-left {
+    width: 48%;
+  }
+
+  .column-right {
+    width: 48%;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
+</style>
