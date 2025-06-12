@@ -194,11 +194,13 @@
 </script>
 
 <style>
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
+ .product-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
   .product-item {
     text-align: center;
@@ -210,11 +212,11 @@
     transform: scale(1.05);
   }
 
-  .product-image {
+.product-image {
     max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-  }
+    height: 444px;
+    width: 433px;
+    object-fit: cover;
 
   .modal {
     display: none;
