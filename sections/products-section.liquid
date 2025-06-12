@@ -97,7 +97,8 @@
       productItem.appendChild(productImage);
       productGrid.appendChild(productItem);
 
-      productItem.addEventListener('click', () => openModal(product.id));
+      // Add event listener to each image
+      productImage.addEventListener('click', () => openModal(product.id));
     });
   }
 
@@ -183,6 +184,7 @@
   .product-image {
     max-width: 100%;
     height: auto;
+    cursor: pointer; /* Makes the image clickable */
   }
 
   .modal {
