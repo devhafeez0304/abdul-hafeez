@@ -3597,6 +3597,17 @@ details-disclosure > details {
 }
 
 /* Custom css */
+/* header Css */
+
+header {
+    justify-content: space-between;
+    display: flex;
+    padding: 20px;
+}
+
+img.logo {
+    object-fit: contain;
+}
 
 /* Banner Css */
 
