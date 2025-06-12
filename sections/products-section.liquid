@@ -65,7 +65,7 @@
 </div>
 
 <script>
-  // Array to hold product data (as an example, replace it with dynamic data from your store)
+  // Sample product data (replace with actual Shopify product data)
   const products = [
     {
       id: 1,
@@ -81,7 +81,7 @@
     // Add more products here if necessary
   ];
 
-  // Function to render the product grid dynamically (only images in grid)
+  // Function to render the product grid dynamically
   function renderProductGrid() {
     const productGrid = document.querySelector('.product-grid');
     products.forEach(product => {
@@ -97,8 +97,10 @@
       productItem.appendChild(productImage);
       productGrid.appendChild(productItem);
 
-      // Add event listener to each image
-      productImage.addEventListener('click', () => openModal(product.id));
+      // Add event listener to each product image for modal functionality
+      productImage.addEventListener('click', function() {
+        openModal(product.id);
+      });
     });
   }
 
@@ -146,26 +148,26 @@
     modal.style.display = 'none';
   }
 
-  // Add event listener to close modal
+  // Add event listener to close modal when clicking the 'X' button
   document.querySelector('.close').addEventListener('click', closeModal);
 
-  // Close modal if clicked outside of it
+  // Close the modal when clicking outside of it
   window.addEventListener('click', function(event) {
     if (event.target === document.getElementById('productModal')) {
       closeModal();
     }
   });
 
-  // Function to add product to cart
+  // Function to add the selected product to the cart
   document.getElementById('addToCartBtn').addEventListener('click', function() {
     const selectedColor = document.getElementById('color').value;
     const selectedSize = document.getElementById('size').value;
     console.log(`Added ${document.getElementById('modalTitle').textContent} to cart with color ${selectedColor} and size ${selectedSize}`);
     
-    // Add to cart logic can be implemented here
+    // Add your cart logic here (e.g., Shopify AJAX API)
   });
 
-  // Call the function to render the product grid
+  // Render the product grid on page load
   renderProductGrid();
 </script>
 
