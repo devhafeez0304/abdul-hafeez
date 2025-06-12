@@ -34,6 +34,7 @@
 }
 {% endschema %}
 
+<!-- Product Grid: Displaying Images -->
 <div class="product-grid">
   {% for product in collections.all.products %}
     <div class="product-item" data-product-id="{{ product.id }}">
@@ -65,7 +66,7 @@
 </div>
 
 <script>
-  // Dynamically generated product data from Shopify
+  // Dynamically generated product data from Shopify Liquid
   const products = [
     {% for product in collections.all.products %}
       {
