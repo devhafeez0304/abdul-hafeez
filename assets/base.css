@@ -3711,6 +3711,20 @@ details-disclosure > details {
   width:100%;
 }
 
+.bottom_text p {
+    font-family: Jost;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 0px;
+    margin: 0;
+    text-align: center;
+   
+}
+
+.bottom_text{
+    background:#F5F5F5;
+    padding: 5px;
+}
 
 
 
