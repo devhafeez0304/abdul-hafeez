@@ -3641,6 +3641,19 @@ details-disclosure > details {
 }
 
 .btn {
+       text-decoration: none;
+    padding: 10px 30px;
+    background-color: #000;
+    color: #fff;
+    font-family: Jost;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    text-transform: uppercase;
+    display: inline-block;
+
+ }
+.btn {
   background: black;
   color: white;
   padding: 10px 80px 10px 40px;
@@ -3699,6 +3712,8 @@ details-disclosure > details {
    right: 11%;
    background-position: right;
 }
+
+
 
 .column-right img{
   width:100%;
