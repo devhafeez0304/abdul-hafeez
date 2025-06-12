@@ -1,6 +1,207 @@
 {% schema %}
-  {
-    "name": "Section name",
-    "settings": []
-  }
+{
+  "name": "Product Grid with Popup",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product Grid Settings"
+    },
+    {
+      "type": "text",
+      "label": "Title",
+      "id": "section_title",
+      "default": "Featured Products"
+    },
+    {
+      "type": "checkbox",
+      "label": "Enable Color Options",
+      "id": "enable_color_options",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "label": "Enable Size Options",
+      "id": "enable_size_options",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Default",
+      "category": "Custom"
+    }
+  ]
+}
 {% endschema %}
+
+<div class="product-grid" id="productGrid"></div>
+
+<div id="productModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="modalData">
+      <img id="modalImage" src="" alt="">
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+      <p id="modalPrice"></p>
+      <p>
+        <label for="color">Color:</label>
+        <select id="color"></select>
+      </p>
+      <p>
+        <label for="size">Size:</label>
+        <select id="size"></select>
+      </p>
+      <button id="addToCartBtn">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const products = [
+    {
+      id: 1,
+      title: "Orange Wide Leg",
+      price: 98000,
+      description: "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.",
+      image: "https://via.placeholder.com/300",
+      options: [
+        { name: "Color", values: ["White", "Black"] },
+        { name: "Size", values: ["S", "M", "L", "XL"] }
+      ]
+    }
+  ];
+
+  function renderProductGrid() {
+    const productGrid = document.getElementById('productGrid');
+    products.forEach(product => {
+      const productItem = document.createElement('div');
+      productItem.classList.add('product-item');
+      productItem.setAttribute('data-product-id', product.id);
+      
+      const productImage = document.createElement('img');
+      productImage.src = product.image;
+      productImage.alt = product.title;
+      
+      const productTitle = document.createElement('h3');
+      productTitle.textContent = product.title;
+
+      productItem.appendChild(productImage);
+      productItem.appendChild(productTitle);
+      productGrid.appendChild(productItem);
+
+      productItem.addEventListener('click', () => openModal(product.id));
+    });
+  }
+
+  function openModal(productId) {
+    const product = products.find(p => p.id === productId);
+
+    const modal = document.getElementById('productModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalPrice = document.getElementById('modalPrice');
+    const colorSelect = document.getElementById('color');
+    const sizeSelect = document.getElementById('size');
+
+    modalImage.src = product.image;
+    modalTitle.textContent = product.title;
+    modalDescription.textContent = product.description;
+    modalPrice.textContent = `${(product.price / 100).toFixed(2)}€`;
+
+    colorSelect.innerHTML = '';
+    product.options[0].values.forEach(value => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      colorSelect.appendChild(option);
+    });
+
+    sizeSelect.innerHTML = '';
+    product.options[1].values.forEach(value => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      sizeSelect.appendChild(option);
+    });
+
+    modal.style.display = 'block';
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('productModal');
+    modal.style.display = 'none';
+  }
+
+  document.querySelector('.close').addEventListener('click', closeModal);
+
+  window.addEventListener('click', function(event) {
+    if (event.target === document.getElementById('productModal')) {
+      closeModal();
+    }
+  });
+
+  document.getElementById('addToCartBtn').addEventListener('click', function() {
+    const selectedColor = document.getElementById('color').value;
+    const selectedSize = document.getElementById('size').value;
+    console.log(`Added ${document.getElementById('modalTitle').textContent} to cart with color ${selectedColor} and size ${selectedSize}`);
+  });
+
+  renderProductGrid();
+</script>
+
+<style>
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .product-item {
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .product-item img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+
+  .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-family: Arial, sans-serif;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
