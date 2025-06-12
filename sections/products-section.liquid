@@ -95,7 +95,7 @@
   // Function to render the product grid dynamically
   function renderProductGrid() {
     const productGrid = document.querySelector('.product-grid');
-    products.forEach(product => {
+    products.forEach(function(product) {
       const productItem = document.createElement('div');
       productItem.classList.add('product-item');
       productItem.setAttribute('data-product-id', product.id);
@@ -117,7 +117,11 @@
 
   // Function to open the modal and display product details
   function openModal(productId) {
-    const product = products.find(p => p.id === productId);
+    const product = products.find(function(p) {
+      return p.id === productId;
+    });
+
+    if (!product) return;
 
     const modal = document.getElementById('productModal');
     const modalImage = document.getElementById('modalImage');
@@ -134,20 +138,28 @@
 
     // Populate the color options
     colorSelect.innerHTML = '';
-    product.options[0].values.forEach(value => {
-      const option = document.createElement('option');
-      option.value = value;
-      option.textContent = value;
-      colorSelect.appendChild(option);
+    product.options.forEach(function(option) {
+      if (option.name === "Color") {
+        option.values.forEach(function(value) {
+          const optionElement = document.createElement('option');
+          optionElement.value = value;
+          optionElement.textContent = value;
+          colorSelect.appendChild(optionElement);
+        });
+      }
     });
 
     // Populate the size options
     sizeSelect.innerHTML = '';
-    product.options[1].values.forEach(value => {
-      const option = document.createElement('option');
-      option.value = value;
-      option.textContent = value;
-      sizeSelect.appendChild(option);
+    product.options.forEach(function(option) {
+      if (option.name === "Size") {
+        option.values.forEach(function(value) {
+          const optionElement = document.createElement('option');
+          optionElement.value = value;
+          optionElement.textContent = value;
+          sizeSelect.appendChild(optionElement);
+        });
+      }
     });
 
     modal.style.display = 'block';
