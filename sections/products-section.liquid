@@ -37,38 +37,12 @@
 <div class="product-grid">
   {% for product in collections.all.products %}
     <div class="product-item" data-product-id="{{ product.id }}">
-      <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
-      <h3>{{ product.title }}</h3>
-      <p>{{ product.description | truncatewords: 15 }}</p>
-      <p>{{ product.price | money }}</p>
-      
-      <!-- Product Variants (Color and Size) -->
-      <div class="product-options">
-        <label for="color-{{ product.id }}">Color:</label>
-        <select id="color-{{ product.id }}" class="color-options" data-product-id="{{ product.id }}">
-          {% for variant in product.variants %}
-            {% if variant.available %}
-              <option value="{{ variant.id }}">{{ variant.title }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-        
-        <label for="size-{{ product.id }}">Size:</label>
-        <select id="size-{{ product.id }}" class="size-options" data-product-id="{{ product.id }}">
-          {% for variant in product.variants %}
-            {% if variant.available %}
-              <option value="{{ variant.id }}">{{ variant.option1 }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-      
-      <button class="add-to-cart-btn" data-product-id="{{ product.id }}">Add to Cart</button>
+      <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}" class="product-image">
     </div>
   {% endfor %}
 </div>
 
-<!-- Modal for Product Details (optional) -->
+<!-- Modal for Product Details -->
 <div id="productModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
@@ -91,37 +65,43 @@
 </div>
 
 <script>
-  // Function to add product to cart
-  function addToCart(productId, color, size) {
-    const data = {
-      items: [{
-        id: productId,
-        quantity: 1,
-        properties: {
-          "Color": color,
-          "Size": size
-        }
-      }]
-    };
+  // Array to hold product data (as an example, replace it with dynamic data from your store)
+  const products = [
+    {
+      id: 1,
+      title: "Orange Wide Leg",
+      price: 98000,
+      description: "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.",
+      image: "https://via.placeholder.com/300",
+      options: [
+        { name: "Color", values: ["White", "Black"] },
+        { name: "Size", values: ["S", "M", "L", "XL"] }
+      ]
+    }
+    // Add more products here if necessary
+  ];
 
-    fetch('/cart/add.js', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Product added to cart:', data);
-      alert('Product added to cart!');
-    })
-    .catch((error) => {
-      console.error('Error:', error);
+  // Function to render the product grid dynamically (only images in grid)
+  function renderProductGrid() {
+    const productGrid = document.querySelector('.product-grid');
+    products.forEach(product => {
+      const productItem = document.createElement('div');
+      productItem.classList.add('product-item');
+      productItem.setAttribute('data-product-id', product.id);
+      
+      const productImage = document.createElement('img');
+      productImage.src = product.image;
+      productImage.alt = product.title;
+      productImage.classList.add('product-image');
+      
+      productItem.appendChild(productImage);
+      productGrid.appendChild(productItem);
+
+      productItem.addEventListener('click', () => openModal(product.id));
     });
   }
 
-  // Modal functionality
+  // Function to open the modal and display product details
   function openModal(productId) {
     const product = products.find(p => p.id === productId);
 
@@ -138,6 +118,7 @@
     modalDescription.textContent = product.description;
     modalPrice.textContent = `${(product.price / 100).toFixed(2)}€`;
 
+    // Populate the color options
     colorSelect.innerHTML = '';
     product.options[0].values.forEach(value => {
       const option = document.createElement('option');
@@ -146,6 +127,7 @@
       colorSelect.appendChild(option);
     });
 
+    // Populate the size options
     sizeSelect.innerHTML = '';
     product.options[1].values.forEach(value => {
       const option = document.createElement('option');
@@ -157,29 +139,33 @@
     modal.style.display = 'block';
   }
 
-  // Close modal functionality
+  // Function to close the modal
   function closeModal() {
     const modal = document.getElementById('productModal');
     modal.style.display = 'none';
   }
 
-  // Add event listeners for modal close button and background click
+  // Add event listener to close modal
   document.querySelector('.close').addEventListener('click', closeModal);
+
+  // Close modal if clicked outside of it
   window.addEventListener('click', function(event) {
     if (event.target === document.getElementById('productModal')) {
       closeModal();
     }
   });
 
-  // Add to cart button functionality
-  document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-    button.addEventListener('click', function() {
-      const productId = this.getAttribute('data-product-id');
-      const color = document.querySelector(`#color-${productId}`).value;
-      const size = document.querySelector(`#size-${productId}`).value;
-      addToCart(productId, color, size);
-    });
+  // Function to add product to cart
+  document.getElementById('addToCartBtn').addEventListener('click', function() {
+    const selectedColor = document.getElementById('color').value;
+    const selectedSize = document.getElementById('size').value;
+    console.log(`Added ${document.getElementById('modalTitle').textContent} to cart with color ${selectedColor} and size ${selectedSize}`);
+    
+    // Add to cart logic can be implemented here
   });
+
+  // Call the function to render the product grid
+  renderProductGrid();
 </script>
 
 <style>
@@ -194,7 +180,7 @@
     cursor: pointer;
   }
 
-  .product-item img {
+  .product-image {
     max-width: 100%;
     height: auto;
   }
