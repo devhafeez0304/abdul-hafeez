@@ -58,6 +58,7 @@
 </div>
 
 <script>
+  // Fetch products dynamically from Shopify using Liquid and pass them to JavaScript
   const products = [
     {% for product in collections.all.products %}
     {
