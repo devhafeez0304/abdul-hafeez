@@ -66,132 +66,131 @@
 </div>
 
 <script>
-  // Dynamically generated product data from Shopify Liquid
-  const products = [
-    {% for product in collections.all.products %}
-      {
-        id: {{ product.id }},
-        title: "{{ product.title }}",
-        price: {{ product.price | money_without_currency }},
-        description: "{{ product.description | strip_html | truncatewords: 20 }}",
-        image: "{{ product.featured_image | img_url: 'medium' }}",
-        options: [
-          {% for option in product.options_with_values %}
-            {
-              name: "{{ option.name }}",
-              values: [
-                {% for value in option.values %}
-                  "{{ value }}"{% if forloop.last == false %},{% endif %}
-                {% endfor %}
-              ]
-            }
-          {% endfor %}
-        ]
+  // Wait for DOM to be fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Dynamically generated product data from Shopify Liquid
+    const products = [
+      {% for product in collections.all.products %}
+        {
+          id: "{{ product.id }}", // Make sure this is a string to match HTML data attribute
+          title: "{{ product.title | escape }}",
+          price: "{{ product.price | money }}",
+          description: "{{ product.description | strip_html | escape | truncatewords: 20 }}",
+          image: "{{ product.featured_image | img_url: 'medium' }}",
+          options: [
+            {% for option in product.options_with_values %}
+              {
+                name: "{{ option.name | escape }}",
+                values: [
+                  {% for value in option.values %}
+                    "{{ value | escape }}"{% unless forloop.last %},{% endunless %}
+                  {% endfor %}
+                ]
+              }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ];
+
+    // Function to open the modal and display product details
+    function openModal(productId) {
+      const product = products.find(function(p) {
+        return p.id === productId.toString(); // Ensure we're comparing strings
+      });
+
+      if (!product) {
+        console.error('Product not found:', productId);
+        return;
       }
-      {% if forloop.last == false %},{% endif %}
-    {% endfor %}
-  ];
 
-  // Function to render the product grid dynamically
-  function renderProductGrid() {
-    const productGrid = document.querySelector('.product-grid');
-    products.forEach(function(product) {
-      const productItem = document.createElement('div');
-      productItem.classList.add('product-item');
-      productItem.setAttribute('data-product-id', product.id);
-      
-      const productImage = document.createElement('img');
-      productImage.src = product.image;
-      productImage.alt = product.title;
-      productImage.classList.add('product-image');
-      
-      productItem.appendChild(productImage);
-      productGrid.appendChild(productItem);
+      const modal = document.getElementById('productModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDescription = document.getElementById('modalDescription');
+      const modalPrice = document.getElementById('modalPrice');
+      const colorSelect = document.getElementById('color');
+      const sizeSelect = document.getElementById('size');
 
-      // Add event listener to each product image for modal functionality
-      productImage.addEventListener('click', function() {
-        openModal(product.id);
+      modalImage.src = product.image;
+      modalImage.alt = product.title;
+      modalTitle.textContent = product.title;
+      modalDescription.textContent = product.description;
+      modalPrice.textContent = product.price;
+
+      // Clear previous options
+      colorSelect.innerHTML = '';
+      sizeSelect.innerHTML = '';
+
+      // Add default options
+      const defaultColorOption = document.createElement('option');
+      defaultColorOption.value = '';
+      defaultColorOption.textContent = 'Select a color';
+      colorSelect.appendChild(defaultColorOption);
+
+      const defaultSizeOption = document.createElement('option');
+      defaultSizeOption.value = '';
+      defaultSizeOption.textContent = 'Select a size';
+      sizeSelect.appendChild(defaultSizeOption);
+
+      // Populate the options
+      product.options.forEach(function(option) {
+        if (option.name.toLowerCase() === "color") {
+          option.values.forEach(function(value) {
+            const optionElement = document.createElement('option');
+            optionElement.value = value;
+            optionElement.textContent = value;
+            colorSelect.appendChild(optionElement);
+          });
+        } else if (option.name.toLowerCase() === "size") {
+          option.values.forEach(function(value) {
+            const optionElement = document.createElement('option');
+            optionElement.value = value;
+            optionElement.textContent = value;
+            sizeSelect.appendChild(optionElement);
+          });
+        }
+      });
+
+      modal.style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    // Add click event to all product items
+    document.querySelectorAll('.product-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        openModal(productId);
       });
     });
-  }
 
-  // Function to open the modal and display product details
-  function openModal(productId) {
-    const product = products.find(function(p) {
-      return p.id === productId;
-    });
+    // Add event listener to close modal when clicking the 'X' button
+    document.querySelector('.close').addEventListener('click', closeModal);
 
-    if (!product) return;
-
-    const modal = document.getElementById('productModal');
-    const modalImage = document.getElementById('modalImage');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDescription = document.getElementById('modalDescription');
-    const modalPrice = document.getElementById('modalPrice');
-    const colorSelect = document.getElementById('color');
-    const sizeSelect = document.getElementById('size');
-
-    modalImage.src = product.image;
-    modalTitle.textContent = product.title;
-    modalDescription.textContent = product.description;
-    modalPrice.textContent = `${product.price}€`;
-
-    // Populate the color options
-    colorSelect.innerHTML = '';
-    product.options.forEach(function(option) {
-      if (option.name === "Color") {
-        option.values.forEach(function(value) {
-          const optionElement = document.createElement('option');
-          optionElement.value = value;
-          optionElement.textContent = value;
-          colorSelect.appendChild(optionElement);
-        });
+    // Close the modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target === document.getElementById('productModal')) {
+        closeModal();
       }
     });
 
-    // Populate the size options
-    sizeSelect.innerHTML = '';
-    product.options.forEach(function(option) {
-      if (option.name === "Size") {
-        option.values.forEach(function(value) {
-          const optionElement = document.createElement('option');
-          optionElement.value = value;
-          optionElement.textContent = value;
-          sizeSelect.appendChild(optionElement);
-        });
-      }
-    });
-
-    modal.style.display = 'block';
-  }
-
-  // Function to close the modal
-  function closeModal() {
-    const modal = document.getElementById('productModal');
-    modal.style.display = 'none';
-  }
-
-  // Add event listener to close modal when clicking the 'X' button
-  document.querySelector('.close').addEventListener('click', closeModal);
-
-  // Close the modal when clicking outside of it
-  window.addEventListener('click', function(event) {
-    if (event.target === document.getElementById('productModal')) {
+    // Function to add the selected product to the cart
+    document.getElementById('addToCartBtn').addEventListener('click', function() {
+      const selectedColor = document.getElementById('color').value;
+      const selectedSize = document.getElementById('size').value;
+      const productTitle = document.getElementById('modalTitle').textContent;
+      
+      console.log(`Added ${productTitle} to cart with color ${selectedColor} and size ${selectedSize}`);
+      // Add your cart logic here (e.g., Shopify AJAX API)
+      
+      // Close the modal after adding to cart
       closeModal();
-    }
+    });
   });
-
-  // Function to add the selected product to the cart
-  document.getElementById('addToCartBtn').addEventListener('click', function() {
-    const selectedColor = document.getElementById('color').value;
-    const selectedSize = document.getElementById('size').value;
-    console.log(`Added ${document.getElementById('modalTitle').textContent} to cart with color ${selectedColor} and size ${selectedSize}`);
-    
-    // Add your cart logic here (e.g., Shopify AJAX API)
-  });
-
-  // Render the product grid on page load
-  renderProductGrid();
 </script>
 
 <style>
@@ -204,32 +203,40 @@
   .product-item {
     text-align: center;
     cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .product-item:hover {
+    transform: scale(1.05);
   }
 
   .product-image {
     max-width: 100%;
     height: auto;
-    cursor: pointer; /* Makes the image clickable */
+    border-radius: 8px;
   }
 
   .modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 
   .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
   }
 
   .close {
@@ -237,9 +244,8 @@
     font-size: 28px;
     font-weight: bold;
     position: absolute;
-    top: 0;
-    right: 25px;
-    font-family: Arial, sans-serif;
+    top: 10px;
+    right: 20px;
   }
 
   .close:hover,
@@ -247,5 +253,33 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+  }
+
+  #modalImage {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  #color, #size {
+    padding: 8px;
+    margin-left: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+
+  #addToCartBtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  #addToCartBtn:hover {
+    background-color: #45a049;
   }
 </style>
