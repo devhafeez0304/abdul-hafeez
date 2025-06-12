@@ -12,6 +12,16 @@
       "id": "section_title",
       "default": "Featured Products"
     },
+
+     {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Number of products to show",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
     {
       "type": "checkbox",
       "label": "Enable Color Options",
@@ -36,7 +46,7 @@
 
 <!-- Product Grid: Displaying Images -->
 <div class="product-grid">
-  {% for product in collections.all.products %}
+  {% for product in collections.all.products limit: section.settings.product_limit %}
     <div class="product-item" data-product-id="{{ product.id }}">
       <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}" class="product-image">
     </div>
@@ -70,7 +80,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     // Dynamically generated product data from Shopify Liquid
     const products = [
-      {% for product in collections.all.products %}
+      {% for product in collections.all.products limit: section.settings.product_limit %}
         {
           id: "{{ product.id }}", // Make sure this is a string to match HTML data attribute
           title: "{{ product.title | escape }}",
