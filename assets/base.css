@@ -3617,11 +3617,11 @@ details-disclosure > details {
   }
   
   .column-left {
-    width: 48%;
+    width: 36%;
   }
 
   .column-right {
-    width: 48%;
+    width: 64%;
   }
 
   .column-left h2 {
