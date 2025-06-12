@@ -3641,19 +3641,6 @@ details-disclosure > details {
 }
 
 .btn {
-       text-decoration: none;
-    padding: 10px 30px;
-    background-color: #000;
-    color: #fff;
-    font-family: Jost;
-    font-weight: 400;
-    font-size: 16px;
-    text-align: center;
-    text-transform: uppercase;
-    display: inline-block;
-
- }
-.btn {
   background: black;
   color: white;
   padding: 10px 80px 10px 40px;
@@ -3664,6 +3651,11 @@ details-disclosure > details {
   overflow: hidden;
   transition: color 0.4s ease;
   z-index: 1; 
+   text-decoration: none;
+    font-family: Jost;
+    font-weight: 400;
+    text-align: center;
+    display: inline-block;
 }
 
 .btn::before {
