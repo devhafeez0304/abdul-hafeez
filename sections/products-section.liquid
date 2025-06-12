@@ -65,20 +65,30 @@
 </div>
 
 <script>
-  // Sample product data (replace with actual Shopify product data)
+  // Fetch product data from Liquid (Shopify)
   const products = [
-    {
-      id: 1,
-      title: "Orange Wide Leg",
-      price: 98000,
-      description: "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.",
-      image: "https://via.placeholder.com/300",
-      options: [
-        { name: "Color", values: ["White", "Black"] },
-        { name: "Size", values: ["S", "M", "L", "XL"] }
-      ]
-    }
-    // Add more products here if necessary
+    {% for product in collections.all.products %}
+      {
+        id: {{ product.id }},
+        title: "{{ product.title }}",
+        price: {{ product.price | money_without_currency }},
+        description: "{{ product.description | strip_html | truncatewords: 20 }}",
+        image: "{{ product.featured_image | img_url: 'medium' }}",
+        options: [
+          {% for option in product.options_with_values %}
+            {
+              name: "{{ option.name }}",
+              values: [
+                {% for value in option.values %}
+                  "{{ value }}"{% if forloop.last == false %},{% endif %}
+                {% endfor %}
+              ]
+            }
+          {% endfor %}
+        ]
+      }
+      {% if forloop.last == false %},{% endif %}
+    {% endfor %}
   ];
 
   // Function to render the product grid dynamically
@@ -119,7 +129,7 @@
     modalImage.src = product.image;
     modalTitle.textContent = product.title;
     modalDescription.textContent = product.description;
-    modalPrice.textContent = `${(product.price / 100).toFixed(2)}€`;
+    modalPrice.textContent = `${product.price}€`;
 
     // Populate the color options
     colorSelect.innerHTML = '';
