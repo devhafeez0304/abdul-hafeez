@@ -1,6 +1,6 @@
 {% schema %}
 {
-  "name": "Products",
+  "name": "Product Grid with Popup",
   "settings": [
     {
       "type": "header",
@@ -27,7 +27,7 @@
   ],
   "presets": [
     {
-      "name": "Products",
+      "name": "Default",
       "category": "Custom"
     }
   ]
@@ -59,19 +59,17 @@
 
 <script>
   const products = [
-    {% for product in collections.all.products %}
     {
-      id: {{ product.id }},
-      title: "{{ product.title }}",
-      price: {{ product.price | money_without_currency | remove: "," }},
-      description: "{{ product.description | strip_html | truncatewords: 20 }}",
-      image: "{{ product.featured_image | img_url: 'medium' }}",
+      id: 1,
+      title: "Orange Wide Leg",
+      price: 98000,
+      description: "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.",
+      image: "https://via.placeholder.com/300",
       options: [
-        { name: "Color", values: [ {% for option in product.options_with_values %}"{{ option.name }}"{% if forloop.last == false %}, {% endif %}{% endfor %} ] },
-        { name: "Size", values: [ {% for size in product.options_with_values %}"{{ size.name }}"{% if forloop.last == false %}, {% endif %}{% endfor %} ] }
+        { name: "Color", values: ["White", "Black"] },
+        { name: "Size", values: ["S", "M", "L", "XL"] }
       ]
     }
-    {% endfor %}
   ];
 
   function renderProductGrid() {
